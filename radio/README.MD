@@ -37,7 +37,7 @@ port: 8080
 log path: /var/log/app
 ```
 
-`main.py`
+`search_path.py`
 ```python
 import sys
 
