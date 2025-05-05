@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-COPY ../1/main.py ../1/requirements.txt /
+COPY main.py requirements.txt /
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
     rm -rf /var/lib/apt/lists/* && \

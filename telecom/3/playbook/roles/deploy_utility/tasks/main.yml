@@ -1,0 +1,45 @@
+# filepath: playbook/roles/deploy/tasks/main.yml
+---
+- name: Copy script and Dockerfile folders to user's home
+  ansible.builtin.copy:
+    src: "{{ item.src }}/"
+    dest: "{{ ansible_env.HOME }}/StatusCode/"
+    mode: "{{ item.mode }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  loop:
+    - { src: "{{ task_folder }}", mode: "0644" }
+
+- name: Build status_code Docker image
+  community.docker.docker_image:
+    name: status_code
+    tag: latest
+    build:
+      path: "{{ ansible_env.HOME }}/StatusCode/"
+    source: build
+
+- name: Run status_code utility
+  community.docker.docker_container:
+    name: status_code
+    image: status_code
+    detach: false
+  register: container_result
+  ignore_errors: true
+
+- name: Remove container afterwards
+  community.docker.docker_container:
+    name: status_code
+    state: absent
+
+- name: Show exit code
+  debug:
+    msg: "Exit code: {{ container_result.container.State.ExitCode }}"
+
+- name: Fail if exit code is not 0
+  fail:
+    msg: "Container exited with code {{ container_result.container.State.ExitCode }}"
+  when: container_result.container.State.ExitCode != 0
+
+- name: Show container stdout
+  debug:
+    msg: "{{ container_result.container.Output }}"

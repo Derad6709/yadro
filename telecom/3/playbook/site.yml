@@ -1,0 +1,8 @@
+- name: Install and deploy StatusCode utility
+  hosts: all
+  vars:
+    task_folder: "{{ playbook_dir }}/../../2"
+
+  roles:
+    - install_docker
+    - deploy_utility

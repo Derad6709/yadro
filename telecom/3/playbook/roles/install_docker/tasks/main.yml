@@ -1,0 +1,34 @@
+# filepath: playbook/roles/install_docker/tasks/main.yml
+---
+- name: Ensure snapd and pipx packages is installed
+  ansible.builtin.package:
+    name:
+      - docker.io
+      - pipx
+      - python3-requests
+    state: present
+  become: true
+
+- name: Ensure the docker group exists
+  ansible.builtin.group:
+    name: docker
+    system: yes
+  become: true
+
+- name: Ensure user is added to the docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: yes
+  become: true
+
+- name: Install docker and requests using pipx
+  vars:
+    pipx_packages:
+      - docker
+      - requests
+  community.general.pipx:
+    name: "{{ item }}"
+    state: latest
+    install_deps: true
+  with_items: "{{ pipx_packages }}"
