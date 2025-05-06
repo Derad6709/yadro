@@ -1,6 +1,6 @@
-# filepath: playbook/roles/deploy/tasks/main.yml
+# filepath: playbook/roles/deploy_utility/tasks/main.yml
 ---
-- name: Copy script and Dockerfile folders to user's home
+- name: Copy artifacts folder to StatusCode folder
   ansible.builtin.copy:
     src: "{{ item.src }}/"
     dest: "{{ ansible_env.HOME }}/StatusCode/"
