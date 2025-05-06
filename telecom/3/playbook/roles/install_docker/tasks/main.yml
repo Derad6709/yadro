@@ -1,6 +1,6 @@
 # filepath: playbook/roles/install_docker/tasks/main.yml
 ---
-- name: Ensure snapd and pipx packages is installed
+- name: Ensure docker, requests and pipx packages are installed
   ansible.builtin.package:
     name:
       - docker.io
